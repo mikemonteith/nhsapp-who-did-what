@@ -17,6 +17,8 @@ To run the functions locally:
 ## Deploy
 
 Run
+`npm i`
+`npm run build`
 `npx func azure functionapp publish whodidwhat`
 
 ## Problem statement

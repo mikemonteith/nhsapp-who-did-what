@@ -15,6 +15,7 @@ export async function devopsTrigger(request: HttpRequest, context: InvocationCon
 
     const body: Record<string, any> = await request.json();
     const user = body.user;
+    const commitUrl = body.commit_url;
 
     const files = body.files;
     console.log(files);
@@ -28,9 +29,13 @@ export async function devopsTrigger(request: HttpRequest, context: InvocationCon
         // For each entity, check if the glob matches any of the changed files.
         // N.B our files contain leading slashes, but the globs in the database do not.
         const regex = globToRegExp("/" + entity.glob);
+        console.log(regex);
         const match = files.find(file => {
-            return regex.test(file.name)
+            console.log("regex.test", regex, file.name, regex.test(file.name));
+            return regex.test(file.name);
         })
+
+        console.log("match", match);
 
         if (match) {
             matchingEntities.push(entity);
@@ -43,7 +48,7 @@ export async function devopsTrigger(request: HttpRequest, context: InvocationCon
     matchingEntities.forEach(entity => {
         console.log(`Sending message to ${entity.userid}`);
         slackClient.chat.postMessage({
-            channel: entity.userid,
+            channel: entity.slack_id,
             blocks: [
                 {
                     "type": "section",
@@ -59,7 +64,17 @@ export async function devopsTrigger(request: HttpRequest, context: InvocationCon
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": `:book: Changes were created by ${user}.\n\n :question: For more information, refer to <https://example.com|this Pull Request>.`
+                        "text": "/.azuredevops/templates/file1.yml"
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `:book: Changes were created by ${user}.\n\n :question: For more information, refer to <${commitUrl}|this Pull Request>.`
                     }
                 }
             ]
