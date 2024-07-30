@@ -12,3 +12,8 @@ Compile typescript to javascript and watch changes:
 
 To run the functions locally:
 `npx func start`
+
+## Deploy
+
+Run
+`npx func azure functionapp publish whodidwhat`
