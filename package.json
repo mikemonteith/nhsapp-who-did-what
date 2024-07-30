@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "@azure/functions": "^4.5.0",
+    "azure-functions-core-tools": "^4.0.5907",
     "ts-node": "^10.9.2"
   }
 }
