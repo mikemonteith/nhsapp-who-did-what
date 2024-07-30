@@ -83,6 +83,9 @@ export async function slackTrigger(
       listOfSubscriptions = `Repo: ${entity.repo}, Glob: ${entity.glob}`;
     }
 
+    const responseUrl = body.get("response_url") as string;
+    console.log(responseUrl);
+
     const payload = {
       blocks: [
         {
@@ -95,7 +98,7 @@ export async function slackTrigger(
       ],
     };
 
-    await fetch("https://hooks.slack.com/commands/1234/5678", {
+    await fetch(responseUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
