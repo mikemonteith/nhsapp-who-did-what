@@ -1,14 +1,18 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { TableClient } from "@azure/data-tables";
 import * as globToRegExp from "glob-to-regexp";
+import { WebClient } from '@slack/web-api';
 
 const sas = process.env.SAS_TOKEN;
 const accountConnectionString=`BlobEndpoint=https://nhsappwdwstore.blob.core.windows.net/;QueueEndpoint=https://nhsappwdwstore.queue.core.windows.net/;FileEndpoint=https://nhsappwdwstore.file.core.windows.net/;TableEndpoint=https://nhsappwdwstore.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiyx&se=2024-07-30T19:11:15Z&st=2024-07-30T11:11:15Z&spr=https&sig=73h6tzUPy9oSZghkJ5jTCEqnCdV99o%2F7hjMRSiYsI0c%3D;SharedAccessSignature=${sas}`
 
 const tableName = 'userConfiguration';
 
+const slackToken = process.env.SLACK_TOKEN;
+
 export async function devopsTrigger(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Http function processed request for url "${request.url}"`);
+    const slackClient = new WebClient(slackToken);
 
     const body: Record<string, any> = await request.json();
     const user = body.user;
@@ -39,6 +43,28 @@ export async function devopsTrigger(request: HttpRequest, context: InvocationCon
 
     matchingEntities.forEach(entity => {
         console.log(`Sending message to ${entity.userid}`);
+        slackClient.chat.postMessage({
+            channel: entity.userid,
+            blocks: [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Hi! Please note that some changes to files you're watching in the *nhsapp* repo are part of a Pull Request due to be implemented:"
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `:book: Changes were created by ${user}.\n\n :question: For more information, refer to <https://example.com|this Pull Request>.`
+                    }
+                }
+            ]
+        });
     });
 
     return;
