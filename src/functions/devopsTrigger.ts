@@ -4,8 +4,7 @@ import * as globToRegExp from "glob-to-regexp";
 import { WebClient } from '@slack/web-api';
 
 const sas = process.env.SAS_TOKEN;
-const accountConnectionString=`BlobEndpoint=https://nhsappwdwstore.blob.core.windows.net/;QueueEndpoint=https://nhsappwdwstore.queue.core.windows.net/;FileEndpoint=https://nhsappwdwstore.file.core.windows.net/;TableEndpoint=https://nhsappwdwstore.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiyx&se=2024-07-30T19:11:15Z&st=2024-07-30T11:11:15Z&spr=https&sig=73h6tzUPy9oSZghkJ5jTCEqnCdV99o%2F7hjMRSiYsI0c%3D;SharedAccessSignature=${sas}`
-
+const accountConnectionString=`BlobEndpoint=https://nhsappwdwstore.blob.core.windows.net/;QueueEndpoint=https://nhsappwdwstore.queue.core.windows.net/;FileEndpoint=https://nhsappwdwstore.file.core.windows.net/;TableEndpoint=https://nhsappwdwstore.table.core.windows.net/;SharedAccessSignature=${sas}`;
 const tableName = 'userConfiguration';
 
 const slackToken = process.env.SLACK_TOKEN;
