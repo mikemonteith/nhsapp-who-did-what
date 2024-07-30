@@ -4,6 +4,9 @@ Function app code
 
 ## Getting started
 
+Set environment variables:
+- `SAS_TOKEN` - the SAS token (look in our team slack channel for this)
+
 Compile typescript to javascript and watch changes:
 `npm run watch`
 
