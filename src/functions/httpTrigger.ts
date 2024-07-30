@@ -3,9 +3,10 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 export async function httpTrigger(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Http function processed request for url "${request.url}"`);
 
-    const name = request.query.get('name') || await request.text() || 'world';
+    const body = await request.formData()
+    console.log(body);
 
-    return { body: `Hello, ${name}!` };
+    return { body: `Hello, ${body.get('user_name')}!` };
 };
 
 app.http('httpTrigger', {
