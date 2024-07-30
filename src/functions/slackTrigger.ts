@@ -75,12 +75,14 @@ export async function slackTrigger(
     return { status: 200 };
   } else if (bodyText.startsWith(SlackCommand.Subscriptions)) {
     const entities = tableClient.listEntities<Entity>();
-    let listOfSubscriptions = "";
+    let listOfSubscriptions = [];
 
     for await (const entity of entities) {
       console.log(entity);
 
-      listOfSubscriptions = `Repo: ${entity.repo}, Glob: ${entity.glob}`;
+      listOfSubscriptions.push(
+        `Repo: ${entity.repo}, Glob: \`${entity.glob}\``
+      );
     }
 
     const responseUrl = body.get("response_url") as string;
@@ -92,7 +94,7 @@ export async function slackTrigger(
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `*${listOfSubscriptions}*`,
+            text: `*${listOfSubscriptions.join("\n")}*`,
           },
         },
       ],
@@ -112,8 +114,6 @@ export async function slackTrigger(
   } else {
     context.log("Unknown command", bodyText);
   }
-
-  return { body: `Hello, ${body.get("text")}!`, status: 200 };
 }
 
 app.http("slackTrigger", {
