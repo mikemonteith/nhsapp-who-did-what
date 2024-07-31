@@ -66,7 +66,7 @@ export async function slackTrigger(
     await tableClient.createEntity(entity);
 
     return {
-      body: `You are now subscirbed to the \`${getRepoName(
+      body: `You are now subscribed to the \`${getRepoName(
         bodyText
       )}\` repository. Tracking files - \`${getGlobPattern(bodyText)}\``,
       status: 200,
