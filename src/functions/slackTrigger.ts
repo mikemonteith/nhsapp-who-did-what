@@ -12,13 +12,6 @@ const accountConnectionString = `BlobEndpoint=https://nhsappwdwstore.blob.core.w
 
 const tableName = "userConfiguration";
 
-interface SlackRequest {
-  user_id: string;
-  user_name: string;
-  command: string;
-  text: string;
-}
-
 interface Entity extends TableEntity {
   slack_id: string;
   repo: string;
@@ -72,7 +65,12 @@ export async function slackTrigger(
 
     await tableClient.createEntity(entity);
 
-    return { status: 200 };
+    return {
+      body: `You are now subscirbed to the \`${getRepoName(
+        bodyText
+      )}\` repository. Tracking files - \`${getGlobPattern(bodyText)}\``,
+      status: 200,
+    };
   } else if (bodyText.startsWith(SlackCommand.Subscriptions)) {
     const entities = tableClient.listEntities<Entity>();
     let listOfSubscriptions = [];
