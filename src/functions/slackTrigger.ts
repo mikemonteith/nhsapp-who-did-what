@@ -23,6 +23,7 @@ enum SlackCommand {
   Subscriptions = "subscriptions",
   RemoveSubscription = "removeSubscription",
   TriggerChange = "triggerChange",
+  Help = "help",
 }
 
 function getRepoName(text: string): string {
@@ -109,6 +110,13 @@ export async function slackTrigger(
     context.log("RemoveSubscription command", bodyText);
   } else if (bodyText.startsWith(SlackCommand.TriggerChange)) {
     context.log("TriggerChange command", bodyText);
+  } else if (bodyText.startsWith(SlackCommand.Help)) {
+    return {
+      body: `You can do the following:\n
+      \`\/whodidwhat subscriptions\` - shows a list of your current subscriptions\n
+      \`\/whodidwhat subscribe <repo_name> <glob_pattern>\` - Create a new subscription for the <repo_name> repo and any files matching <glob_pattern>`,
+      status: 200,
+    };
   } else {
     context.log("Unknown command", bodyText);
   }
